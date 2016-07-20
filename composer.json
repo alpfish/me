@@ -4,7 +4,8 @@
     "keywords": ["alpfish", "me", "tools"],
     "type": "project",
     "license": "MIT",
-    "version": "0.0.1",
+    "version": "0.0.2",
+    "minimum-stability": "dev",
     "authors": [
         {
             "name": "AlpFish",

@@ -10,20 +10,9 @@
             "email": "254997790@qq.com"
         }
     ],
-    "require": {
-    },
-    "require-dev": {
-    },
     "autoload": {
         "psr-4": {
             "Alpfish\\Me\\": "src"
         }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "0.1-dev"
-        }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }

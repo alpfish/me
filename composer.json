@@ -1,18 +1,19 @@
 {
-    "name": "alpfish/me",
-    "description": "some usefull app tools for me.",
-    "keywords": ["alpfish", "me", "tools"],
-    "type": "project",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "AlpFish",
-            "email": "254997790@qq.com"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "Alpfish\\Me\\": "src"
-        }
+  "name": "alpfish/me",
+  "description": "some usefull app tools for me.",
+  "keywords": ["alpfish", "me", "tools"],
+  "homepage": "https://github.com/alpfish/me",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "AlpFish",
+      "email": "254997790@qq.com"
     }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Alpfish\\Me\\": "src"
+    }
+  }
 }

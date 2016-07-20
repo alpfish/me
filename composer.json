@@ -1,0 +1,25 @@
+{
+    "name": "alpfish/me",
+    "description": "some usefull app tools for me.",
+    "keywords": ["alpfish", "me", "tools"],
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": ">=5.5.9"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4": {
+            "Alpfish\\Me\\": "src"
+        },
+        "files": [
+
+        ]
+    },
+    "autoload-dev": {
+        "classmap": [
+
+        ]
+    }
+}

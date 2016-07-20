@@ -4,23 +4,21 @@
     "keywords": ["alpfish", "me", "tools"],
     "type": "project",
     "license": "MIT",
+    "version": "0.0.1",
+    "authors": [
+        {
+            "name": "AlpFish",
+            "email": "254997790@qq.com"
+        }
+    ],
     "require": {
-        "php": ">=5.5.9",
-        "another-vendor/package": "1.*"
+        "php": ">=5.5.9"
     },
     "require-dev": {
     },
     "autoload": {
         "psr-4": {
             "Alpfish\\Me\\": "src"
-        },
-        "files": [
-
-        ]
-    },
-    "autoload-dev": {
-        "classmap": [
-
-        ]
+        }
     }
 }

@@ -2,6 +2,7 @@
 
 if ( ! function_exists('request'))
 {
+    //请求数据
     function request($name = null)
     {
         if(is_string($name)) {
@@ -9,5 +10,17 @@ if ( ! function_exists('request'))
             return $_GET[$name];
         }
         return null;
+    }
+}
+
+if ( ! function_exists('api'))
+{
+    //api 封装
+    function api($name = null)
+    {
+        if($name == 'data') {
+            return Alpfish\Me\Api\Data::getInstance();
+        }
+        return Alpfish\Me\Api\Api::getInstance();
     }
 }

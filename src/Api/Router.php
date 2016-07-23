@@ -7,7 +7,6 @@ namespace Alpfish\Me\Api;
 
 class Router
 {
-
     public static function run($api_path = '', $api_ext = '.php')
     {
         //Api 根目录

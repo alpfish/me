@@ -1,5 +1,12 @@
 # 介绍
-本文档来自 Laravel 框架的 Illuminate Database 原文档，介绍如何在项目中引入 illuminate/database 包，以便能够使用 Eloquent ORM。
+
+Laravel 官方 Illuminate Database 文档。
+
+介绍如何引入 illuminate/database, 以便项目能够使用数据库迁移、查询构建器、和 Eloquent ORM 。
+
+alpfish/me 包 composer.json 文件中已引入相关依赖(illuminate/database, illuminate/events)，并且已经在 bootstrap.php 文件中进行了配置。
+
+只需要在项目模型继承 Illuminate\Database\Eloquent\Model 类便可使用。
 
 ## Illuminate Database
 

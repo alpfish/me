@@ -6,8 +6,8 @@ if ( ! function_exists('request'))
     function request($name = null)
     {
         if(is_string($name)) {
-            //暂时返回经由海盗系统处理过的 $_GET 数据（已包括$_POST）
-            return $_GET[$name];
+            //todo 包在海盗系统前引入，需对请求数据处理
+            return $_REQUEST[$name];
         }
         return null;
     }

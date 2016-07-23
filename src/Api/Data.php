@@ -7,38 +7,91 @@ use Alpfish\Me\Contracts\Api\Data as DataContract;
  *    Api 数据封装与响应
  *----------------------
  *
- * 1. 使用帮助函数 api('data') 或 api()->data() 调用
+ * 1. 使用帮助函数 api('data') 或 api()->data()
  * 2. 支持方法链, response()放最后
- * 3. 错误数据响应类型：
- *    (1)调用错误, 用于判断Api调用是否成功
- *    (2)应用错误，用于处理应用逻辑中的错误提示信息返回
- * 4. Api 数据设置 与 响应格式：
+ * 3. Api 响应数据：
  *    {
- *      "err": 0, //调用错误 api()->err('foo', 1);
- *      "msg": 'Success', //调用错误信息
- *      "data":[
- *          "errs": [ ], //应用错误 api('data')->err('username', '用户名已存在');
+ *      "status": 200,    //响应状态 默认200：响应成功，4XX: 客户端非法请求(参数错误等), 5XX: 服务器运行错误
+ *      "msg": "Success", //响应信息 默认"Success", api('data')->status(400, '缺少参数:name');
+ *      "data":{
  *          "foo": "bar" //应用数据 api('data')->set('foo', 'bar');
- *      ],
- *      "help": ''
+ *          "errs": [ ], //应用错误数据 api('data')->errs('foo', 'bar');
+ *      },
  *    }
- * 5. 默认响应格式为JSON，请求参数 $format 可指定 XML
+ *
+ * 4. 响应数据固定参数作用：
+ *    status 和 msg     返回响应状态，为前端提供 Api 调用错误的信息提示，便于开发。
+ *    data              处理成功的响应数据。
+ *    data.errs         返回应用逻辑处理的错误数据， 如对用户提交的表单字段验证失败，登录用户 Token 失效需重新登录等。
+ *
+ * 4. 默认响应格式为JSON，请求参数 $format 可指定 XML
  *
  * */
 
 class Data implements DataContract
 {
-    //调用错误代码, 为 0 时调用成功
-    protected $api_err = 0;
+    //响应状态码, 默认200：响应成功，4XX: 客户端非法请求, 5XX: 服务器运行错误
+    protected $status = 200;
 
-    //调用错误信息
-    protected $api_msg = 'Success';
+    //状态码参考
+    protected  $_status = array(
+        // Informational 1xx
+        100 => 'Continue',
+        101 => 'Switching Protocols',
+        // Success 2xx
+        200 => 'OK',
+        201 => 'Created',
+        202 => 'Accepted',
+        203 => 'Non-Authoritative Information',
+        204 => 'No Content',
+        205 => 'Reset Content',
+        206 => 'Partial Content',
+        // Redirection 3xx
+        300 => 'Multiple Choices',
+        301 => 'Moved Permanently',
+        302 => 'Moved Temporarily ', // 1.1
+        303 => 'See Other',
+        304 => 'Not Modified',
+        305 => 'Use Proxy',
+        // 306 is deprecated but reserved
+        307 => 'Temporary Redirect',
+        // Client Error 4xx
+        400 => 'Bad Request',
+        401 => 'Unauthorized',
+        402 => 'Payment Required',
+        403 => 'Forbidden',
+        404 => 'Not Found',
+        405 => 'Method Not Allowed',
+        406 => 'Not Acceptable',
+        407 => 'Proxy Authentication Required',
+        408 => 'Request Timeout',
+        409 => 'Conflict',
+        410 => 'Gone',
+        411 => 'Length Required',
+        412 => 'Precondition Failed',
+        413 => 'Request Entity Too Large',
+        414 => 'Request-URI Too Long',
+        415 => 'Unsupported Media Type',
+        416 => 'Requested Range Not Satisfiable',
+        417 => 'Expectation Failed',
+        // Server Error 5xx
+        500 => 'Internal Server Error',
+        501 => 'Not Implemented',
+        502 => 'Bad Gateway',
+        503 => 'Service Unavailable',
+        504 => 'Gateway Timeout',
+        505 => 'HTTP Version Not Supported',
+        509 => 'Bandwidth Limit Exceeded'
+    );
+
+    //响应状态信息
+    protected $msg = 'Success';
 
     //应用数据
     protected $data = array();
 
     //应用错误数据
-    protected $data_errs = array();
+    protected $errs = array();
 
     //单例模式
     protected static $self;
@@ -65,11 +118,11 @@ class Data implements DataContract
             $this->data = array_merge($this->data, $key);
             return $this;
         }
-        if (! is_object($key)) {        // 键值对
+        if (is_string($key)) {        // 键值对
             $this->data = array_merge($this->data, array($key => $value));
             return $this;
         }
-        $this->data = array_merge($this->data, array($key));        // 对象
+        $this->data = array_merge($this->data, array($key));        // 其他
 
         return $this;
     }
@@ -78,33 +131,33 @@ class Data implements DataContract
      * 设置应用错误数据
      *
      * @param  string|array $key
-     * @param  mixed  $value
+     * @param  string  $value
      * @return $this
      * */
-    public function err($key, $value = null) {
+    public function errs($key, $value = null) {
         if (is_array($key)) {        // 数组
-            $this->data_errs = array_merge($this->data_errs, $key);
+            $this->errs = array_merge($this->errs, $key);
             return $this;
         }
-        if (! is_object($key)) {        // 键值对
-            $this->data_errs = array_merge($this->data_errs, array($key => $value));
+        if ( is_string($key) && !is_null($value)) {        // 键值对且有错误值
+            $this->errs = array_merge($this->errs, array($key => $value));
             return $this;
         }
-        $this->data_errs = array_merge($this->data_errs, array($key));        // 对象
+        $this->errs = array_merge($this->errs, array($key));        // 其他
 
         return $this;
     }
 
     /* *
-     * 设置调用错误数据
+     * 设置响应状态信息
      *
-     * @param  int $code
+     * @param  int $status
      * @param  string  $msg
      * @return $this
      * */
-    public function api_err($msg, $code = 400) {
-        $this->api_err = $code;
-        $this->api_msg = $msg;
+    public function status($status, $msg) {
+        $this->status = (int) $status;
+        $this->msg = (string) $msg;
         return $this;
     }
 
@@ -143,10 +196,10 @@ class Data implements DataContract
     // 封装响应数据
     private function get_responseData()
     {
-        $this->data['errs'] = $this->data_errs;
+        $this->data['errs'] = $this->errs;
         $response = array(
-            'err' => $this->api_err,
-            'msg' => $this->api_msg,
+            'status' => $this->status,
+            'msg' => $this->msg,
             'data' => $this->data
         );
         return $response;

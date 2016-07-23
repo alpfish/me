@@ -5,22 +5,24 @@ namespace Alpfish\Me\Contracts\Api;
  *    Api 数据封装与响应
  *----------------------
  *
- * 1. 使用帮助函数 api('data') 或 api()->data() 调用
+ * 1. 使用帮助函数 api('data') 或 api()->data()
  * 2. 支持方法链, response()放最后
- * 3. 错误数据响应类型：
- *    (1)调用错误, 用于判断Api调用是否成功
- *    (2)应用错误，用于处理应用逻辑中的错误提示信息返回
- * 4. Api 数据设置 与 响应格式：
+ * 3. Api 响应数据：
  *    {
- *      "err": 0, //调用错误 api()->err('foo', 1);
- *      "msg": 'Success', //调用错误信息
- *      "data":[
- *          "errs": [ ], //应用错误 api('data')->err('username', '用户名已存在');
+ *      "status": 200,    //响应状态 默认200：响应成功，4XX: 客户端非法请求(参数错误等), 5XX: 服务器运行错误
+ *      "msg": "Success", //响应信息 默认"Success", api('data')->status(400, '缺少参数:name');
+ *      "data":{
  *          "foo": "bar" //应用数据 api('data')->set('foo', 'bar');
- *      ],
- *      "help": ''
+ *          "errs": [ ], //应用错误数据 api('data')->errs('foo', 'bar');
+ *      },
  *    }
- * 5. 默认响应格式为JSON，请求参数 $format 可指定 XML
+ *
+ * 4. 响应数据固定参数作用：
+ *    status 和 msg     返回响应状态，为前端提供 Api 调用错误的信息提示，便于开发。
+ *    data              处理成功的响应数据。
+ *    data.errs         返回应用逻辑处理的错误数据， 如对用户提交的表单字段验证失败，登录用户 Token 失效需重新登录等。
+ *
+ * 4. 默认响应格式为JSON，请求参数 $format 可指定 XML
  *
  * */
 
@@ -45,19 +47,19 @@ interface Data
      * 设置应用错误数据
      *
      * @param  string|array $key
-     * @param  mixed  $value
+     * @param  string  $value
      * @return $this
      * */
-    public function err($key, $value = null);
+    public function errs($key, $value = null);
 
     /* *
-     * 设置调用错误数据
+     * 设置响应状态信息
      *
-     * @param  int $code
+     * @param  int $status
      * @param  string  $msg
      * @return $this
      * */
-    public function api_err($msg, $code = 400);
+    public function status($status, $msg);
 
     /* *
      * Api 响应

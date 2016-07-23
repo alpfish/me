@@ -16,16 +16,10 @@ class Api
         return self::$self = new self();
     }
 
-    //应用数据封装
+    //Api 响应数据封装
     public static function data()
     {
         return Data::getInstance();
-    }
-
-    //调用错误数据封装
-    public static function err($msg, $code = 400)
-    {
-        return self::data()->api_err($msg, $code);
     }
 
     //Api 响应

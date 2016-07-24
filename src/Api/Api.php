@@ -22,6 +22,12 @@ class Api
         return Data::getInstance();
     }
 
+
+    public static function get()
+    {
+        //todo 从内部获取具体api方法名下的数据, 与api('data')->get()是不同的两个帮助函数
+    }
+
     //Api 响应
     public static function response()
     {

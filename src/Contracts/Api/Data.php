@@ -55,11 +55,11 @@ interface Data
     /* *
      * 设置响应状态信息
      *
-     * @param  int $status
+     * @param  int $code
      * @param  string  $msg
      * @return $this
      * */
-    public function status($status, $msg);
+    public function status($code, $msg);
 
     /* *
      * Api 响应

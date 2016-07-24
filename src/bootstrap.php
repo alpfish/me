@@ -27,7 +27,7 @@ $capsule->addConnection($config_me['database']);
 
 // 查询构建器 MyDB
 $capsule->setAsGlobal();
-class_alias('Illuminate\Database\Capsule\Manager','MyDB');
+class_alias('Illuminate\Database\Capsule\Manager', 'MyDB');
 
 // Eloquent ORM
 $capsule->bootEloquent();

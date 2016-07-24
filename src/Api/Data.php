@@ -33,8 +33,8 @@ class Data implements DataContract
     //响应状态码, 默认200：响应成功，4XX: 客户端非法请求, 5XX: 服务器运行错误
     protected $status = 200;
 
-    //状态码参考
-    protected  $_status = array(
+    //状态码
+    protected $_status = array(
         // Informational 1xx
         100 => 'Continue',
         101 => 'Switching Protocols',
@@ -100,9 +100,9 @@ class Data implements DataContract
      * @return self
      * 在帮助函数中实现：return \Alp\Api\Data\Data::getInstance(); 便于 IDE 使用 data() 函数提示
      * */
-    public static function getInstance() {
-        if (self::$self)
-            return self::$self;
+    public static function getInstance()
+    {
+        if (self::$self) return self::$self;
         return self::$self = new self();
     }
 
@@ -113,7 +113,8 @@ class Data implements DataContract
     * @param  mixed  $value
     * @return $this
     * */
-    public function set($key, $value = null) {
+    public function set($key, $value = null)
+    {
         if (is_array($key)) {        // 数组
             $this->data = array_merge($this->data, $key);
             return $this;
@@ -134,12 +135,13 @@ class Data implements DataContract
      * @param  string  $value
      * @return $this
      * */
-    public function errs($key, $value = null) {
+    public function errs($key, $value = null)
+    {
         if (is_array($key)) {        // 数组
             $this->errs = array_merge($this->errs, $key);
             return $this;
         }
-        if ( is_string($key) && !is_null($value)) {        // 键值对且有错误值
+        if (is_string($key) && !is_null($value)) {        // 键值对且有错误值
             $this->errs = array_merge($this->errs, array($key => $value));
             return $this;
         }
@@ -151,13 +153,21 @@ class Data implements DataContract
     /* *
      * 设置响应状态信息
      *
-     * @param  int $status
+     * @param  int $code
      * @param  string  $msg
      * @return $this
      * */
-    public function status($status, $msg) {
-        $this->status = (int) $status;
-        $this->msg = (string) $msg;
+    public function status($code, $msg)
+    {
+        $this->status = (int)$code;
+        $this->msg = (string)$msg;
+        //发送响应头,前端应注意处理
+        if (array_key_exists($code, $this->_status)) {
+            header('HTTP/1.1 ' . $code . ' ' . $this->_status[$code]);
+            // 确保FastCGI模式下正常
+            header('Status:' . $code . ' ' . $this->_status[$code]);
+        }
+
         return $this;
     }
 
@@ -166,9 +176,10 @@ class Data implements DataContract
      *
      * @return Response
      * */
-    public function response() {
+    public function response()
+    {
         // XML响应
-        $format = empty(request('format')) ? 'JSON' : $format=request('format');
+        $format = empty(request('format')) ? 'JSON' : request('format');
         if (strtoupper($format) == 'XML') {
             $content = $this->xmlEncode($this->get_responseData());
             header('Content-Type: text/xml');
@@ -187,9 +198,9 @@ class Data implements DataContract
      * @param  string $key
      * @return mixed
      * */
-    public function get($key = null) {
-        if(is_string($key))
-            return isset($this->data[$key]) ? $this->data[$key] : null;
+    public function get($key = null)
+    {
+        if (is_string($key)) return isset($this->data[$key]) ? $this->data[$key] : null;
         return $this->get_responseData();
     }
 
@@ -197,11 +208,7 @@ class Data implements DataContract
     private function get_responseData()
     {
         $this->data['errs'] = $this->errs;
-        $response = array(
-            'status' => $this->status,
-            'msg' => $this->msg,
-            'data' => $this->data
-        );
+        $response = array('status' => $this->status, 'msg' => $this->msg, 'data' => $this->data);
         return $response;
     }
 
@@ -211,7 +218,8 @@ class Data implements DataContract
      * @param array $data 数据
      * return string
      * */
-    private function xmlEncode($data = array()) {
+    private function xmlEncode($data = array())
+    {
         $xml = "<?xml version='1.0' encoding='UTF-8'?>\n";
         $xml .= "<root>\n";
         $xml .= $this->xmlToEncode($data);
@@ -219,11 +227,12 @@ class Data implements DataContract
         return $xml;
     }
 
-    private function xmlToEncode($data) {
+    private function xmlToEncode($data)
+    {
         $xml = "";
-        foreach($data as $key => $value) {
+        foreach ($data as $key => $value) {
             $attr = "";
-            if(is_numeric($key)) {
+            if (is_numeric($key)) {
                 $attr = " id='{$key}'";
                 $key = "item";
             }

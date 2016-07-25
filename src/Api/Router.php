@@ -1,5 +1,5 @@
 <?php
-namespace Alpfish\Me\Api;
+namespace Me\Api;
 /*
 |--------------------------------------------------------------------------
 | Api 路由器
@@ -21,7 +21,10 @@ class Router
     public static $path = '/app/api/';
 
     //默认简写路由地图文件名
-    public static $routes = 'router.php';
+    public static $short_method_router = 'router.php';
+
+    //默认Api名, 外部设置此值表示应用内部调用
+    public static $method = '';
 
     //默认版本
     public static $version = 'v1';
@@ -42,18 +45,17 @@ class Router
      */
     public static function run($path = '')
     {
-        //获取正确格式的路径
+        //获取路径
         $path = empty($path) ? self::$path : $path;
-        $path = path_format($path);
+        $path = ab_path($path);
         if (!file_exists($path)) return api('data')->status(500, '服务器Api目录设置错误')->response();
 
         //获取 method
-        if (!request('method')) return api('data')->status(400, '缺少请求参数：method')->response();
+        if (!request('method') && empty(self::$method)) return api('data')->status(400, '缺少请求参数：method')->response();
         $method = self::get_real_method($path);
         //版本处理
         $v = request('version') ? request('version') : self::$version;
         if (!file_exists($path .= $v . '/')) return api('data')->status(404, 'Api版本不正确')->response();
-
         //路由处理
         $method = explode('.', $method);
         $count = count($method);
@@ -82,12 +84,13 @@ class Router
      *
      * @author AlpFish 2016/7/24 11:10
      */
-    private static function get_real_method($path)
+    public static function get_real_method($path)
     {
-        $method = mb_strtolower(request('method'));
+        $short_map =array();
+        $method = empty(self::$method) ? mb_strtolower(request('method')) : self::$method;
         //获取Api简写路由列表
         if (is_file($path . 'router.php')) {
-            $short_map = (array)require_once $path . self::$routes;
+            $short_map =  array_merge($short_map, require $path . self::$short_method_router) ;
             $short_map = array_change_key_case($short_map);
             $method = array_key_exists($method, $short_map) ? $short_map[$method] : $method;
         }

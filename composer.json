@@ -14,15 +14,16 @@
   "require": {
     "php": ">=5.5.9",
     "illuminate/database": "^5.2",
-    "illuminate/events": "^5.2"
+    "illuminate/events": "^5.2",
+    "hassankhan/config": "^0.10.0"
   },
   "autoload": {
     "psr-4": {
-      "Alpfish\\Me\\": "src"
+      "Me\\": "src"
     },
     "files": [
-      "src/bootstrap.php",
-      "src/helpers.php"
+      "src/helpers.php",
+      "src/bootstrap.php"
     ]
   }
 }

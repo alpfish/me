@@ -1,7 +1,7 @@
 <?php
-namespace Alpfish\Me\Api;
+namespace Me\Api;
 
-use Alpfish\Me\Contracts\Api\Data as DataContract;
+use Me\Contracts\Api\Data as DataContract;
 
 /*----------------------
  *    Api 数据封装与响应
@@ -180,16 +180,17 @@ class Data implements DataContract
     {
         // XML响应
         $format = empty(request('format')) ? 'JSON' : request('format');
-        if (strtoupper($format) == 'XML') {
+
+        if(mb_strtoupper($format) === 'SAW') return $this->get_responseData();
+
+        if (strtoupper($format) === 'XML') {
             $content = $this->xmlEncode($this->get_responseData());
-            header('Content-Type: text/xml');
-            echo $content;
-            exit();
+            header('Content-Type: text/xml; charset=utf-8');
+            echo $content; exit();
         }
         // JSON响应
-        header('Content-Type: application/json');
-        echo json_encode($this->get_responseData());
-        exit();
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($this->get_responseData()); exit();
     }
 
     /* *

@@ -1,5 +1,5 @@
 <?php
-namespace Alpfish\Me\Api;
+namespace Me\Api;
 /**
  * Auth: AlpFish.
  * Date: 2016/7/21 14:12
@@ -10,9 +10,9 @@ class Api
     protected static $self;
 
     //单例模式
-    public static function getInstance() {
-        if (self::$self)
-            return self::$self;
+    public static function getInstance()
+    {
+        if (self::$self) return self::$self;
         return self::$self = new self();
     }
 
@@ -22,15 +22,24 @@ class Api
         return Data::getInstance();
     }
 
-
-    public static function get()
+    //应用内部获取 Api 数据 (可能会导致死循环)
+    /*
+    public static function get($method, $param = array(), $version = 'v1')
     {
-        //todo 从内部获取具体api方法名下的数据, 与api('data')->get()是不同的两个帮助函数
+        //返回原生数据
+        $_REQUEST['format'] = 'saw';
+        Router::$method = $method;
+        Router::$version = $version;
+        foreach ($param as $k => $v) {
+            $_REQUEST[$k] = $v;
+        }
+        return Router::run();
     }
+    */
 
     //Api 响应
     public static function response()
     {
-        self::data()->response();
+        return Data::getInstance()->response();
     }
 }

@@ -1,8 +1,17 @@
 <?php
 
-
-// 加载配置
-$config_me = require __DIR__ . '/../config/config.php';
+/*
+|--------------------------------------------------------------------------
+| 加载配置文件
+|--------------------------------------------------------------------------
+|
+| 加载后可直接获取各配置项值
+|
+*/
+//默认配置
+me_config()->load(__DIR__ . '/../config/config.php');
+//项目配置
+me_config()->load(ab_path('/config/me.php'));
 
 /*
 |--------------------------------------------------------------------------
@@ -16,10 +25,8 @@ $config_me = require __DIR__ . '/../config/config.php';
 |
 */
 use Illuminate\Database\Capsule\Manager as Capsule;
-
 $capsule = new Capsule;
-$capsule->addConnection($config_me['database']);
-
+$capsule->addConnection(me_config('database'));
 // 为 Eloquent 模型设置事件调度器，不用可注释掉
 // use Illuminate\Events\Dispatcher;
 // use Illuminate\Container\Container;

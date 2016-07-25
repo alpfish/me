@@ -1,5 +1,5 @@
 <?php
-namespace Alpfish\Me\Contracts\Api;
+namespace Me\Contracts\Api;
 
 /*----------------------
  *    Api 数据封装与响应

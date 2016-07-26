@@ -24,6 +24,7 @@ class Config implements ConfigInterface
     public static function getInstance()
     {
         if (self::$self) return self::$self;
+
         return self::$self = new self();
     }
 
@@ -37,14 +38,15 @@ class Config implements ConfigInterface
     public function load($path)
     {
         if (is_file($path)) $this->data = array_merge($this->data, (array)require $path);
+
         return $this;
     }
 
     /**
-     * 获取配置项值
+     * 获取配置
      *
-     * @param string $name 配置项名，默认返回全部
-     * @param string $default 默认值，值不存在时返回
+     * @param string $name    配置项名
+     * @param string $default 默认值，配置选项不存在的话默认值将会被指定并返回
      *
      * @return mixed
      *
@@ -52,17 +54,18 @@ class Config implements ConfigInterface
      */
     public function get($name = null, $default = null)
     {
-        $config = $this->data;
-        if (is_null($name)) return $config;
         if (is_string($name)) {
             $name = explode('.', $name);
             switch (count($name)) {
                 case 1:
-                    return isset($config[$name[0]]) ? $config[$name[0]] : $default;
+                    if (!isset($this->data[$name[0]])) $this->data[$name[0]] = $default;
+                    return $this->data[$name[0]];
                 case 2:
-                    return isset($config[$name[0]][$name[1]]) ? $config[$name[0]][$name[1]] : $default;
+                    if (!isset($this->data[$name[0]][$name[1]])) $this->data[$name[0]][$name[1]] = $default;
+                    return $this->data[$name[0]][$name[1]];
                 case 3:
-                    return isset($config[$name[0]][$name[1]][$name[2]]) ? $config[$name[0]][$name[1]][$name[2]] : $default;
+                    if (!isset($this->data[$name[0]][$name[1]][$name[2]])) $this->data[$name[0]][$name[1]][$name[2]] = $default;
+                    return $this->data[$name[0]][$name[1]][$name[2]];
             }
         }
         return is_null($default) ? null : $default;

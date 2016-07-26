@@ -32,9 +32,9 @@ $capsule->addConnection(me_config('database'));
 // use Illuminate\Container\Container;
 // $capsule->setEventDispatcher(new Dispatcher(new Container));
 
-// 查询构建器 MyDB
+// 查询构建器 MeDB
 $capsule->setAsGlobal();
-class_alias('Illuminate\Database\Capsule\Manager', 'MyDB');
+class_alias('Illuminate\Database\Capsule\Manager', 'MeDB');
 
 // Eloquent ORM
 $capsule->bootEloquent();

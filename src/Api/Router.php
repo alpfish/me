@@ -84,7 +84,7 @@ class Router
      *
      * @author AlpFish 2016/7/24 11:10
      */
-    public static function get_real_method($path)
+    protected static function get_real_method($path)
     {
         $short_map =array();
         $method = empty(self::$method) ? mb_strtolower(request('method')) : self::$method;

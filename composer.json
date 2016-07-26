@@ -14,8 +14,7 @@
   "require": {
     "php": ">=5.5.9",
     "illuminate/database": "^5.2",
-    "illuminate/events": "^5.2",
-    "hassankhan/config": "^0.10.0"
+    "illuminate/events": "^5.2"
   },
   "autoload": {
     "psr-4": {

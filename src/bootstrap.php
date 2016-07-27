@@ -1,5 +1,11 @@
 <?php
 
+
+
+
+//ddd('alpfish/me bootstrap.php');
+defined('ME_PATH') || define('ME_PATH', ab_path(__DIR__ . '/../'));
+
 /*
 |--------------------------------------------------------------------------
 | 加载配置文件
@@ -25,6 +31,7 @@ me_config()->load(ab_path('/config/me.php'));
 |
 */
 use Illuminate\Database\Capsule\Manager as Capsule;
+
 $capsule = new Capsule;
 $capsule->addConnection(me_config('database'));
 // 为 Eloquent 模型设置事件调度器，不用可注释掉
@@ -39,3 +46,5 @@ class_alias('Illuminate\Database\Capsule\Manager', 'MeDB');
 // Eloquent ORM
 $capsule->bootEloquent();
 
+// 启动包
+Me\Api\Router::run();

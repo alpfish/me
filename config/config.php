@@ -11,7 +11,7 @@ return [
         'host'      => 'localhost',
         'database'  => 'haidao',
         'username'  => 'root',
-        'password'  => 'dd',
+        'password'  => '',
         'charset'   => 'utf8',
         'collation' => 'utf8_unicode_ci',
         'prefix'    => 'hd_',

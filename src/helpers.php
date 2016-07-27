@@ -1,53 +1,7 @@
 <?php
 
 
-/*--------------------------------------------------------------------------
- * 获取包配置项值
- *--------------------------------------------------------------------------
- * 1. 可通过 . 号获取, 最多三层；
- * 2. 用例：
- * me_config()->load(ab_path('/config/sms.php')); //加载配置文件
- * me_config('database'); //返回'database'配置项的值
- * me_config('site.name'); //获取 'site' 下 'name' 配置的值，
- * me_config('foo', 'bar'); //若 'foo' 配置项不存在，则设置 'foo '并返回值 'bar'
- * me_config()->all(); //返回所有配置
- *
- * @param string [name] 配置项名称
- * @param string [default] 默认值，配置选项不存在的话默认值将会被指定并返回
- *
- * @return string | array | Me\Config\Config
- *
- * @author AlpFish 2016/7/25 18:42
- */
-if (!function_exists('me_config')) {
-    function me_config($name = null, $default = null)
-    {
-        if (!is_null($name)) return Me\Config\Config::getInstance()->get($name, $default);
 
-        return Me\Config\Config::getInstance();
-    }
-}
-
-/*
-|--------------------------------------------------------------------------
-| 获取HTTP请求数据
-|--------------------------------------------------------------------------
-|
-| 包括 GET 和 POST 数据。
-|
-| @auth: AlpFish 2016/7/25 9:26
-*/
-if (!function_exists('request')) {
-    function request($name = null, $default = null)
-    {
-        static $request = array();
-        $request = array_merge($request, (array)$_GET, (array)$_POST);
-        if (is_string($name) && isset($request[$name])) {
-            return $request[$name];
-        }
-        return null;
-    }
-}
 
 /*--------------------------------------------------------------------------
  * Api 数据封装与响应
@@ -117,5 +71,53 @@ if (!function_exists('ab_path')) {
         }
 
         return $path[0] === '/' ? $root . substr($path, 1) : $root . $path;
+    }
+}
+
+/*--------------------------------------------------------------------------
+ * 获取包配置项值
+ *--------------------------------------------------------------------------
+ * 1. 可通过 . 号获取；
+ * 2. 用例：
+ * me_config()->load(ab_path('/config/sms.php')); //加载配置文件
+ * me_config('database'); //返回'database'配置项的值
+ * me_config('site.name'); //获取 'site' 下 'name' 配置的值，
+ * me_config('foo', 'bar'); //若 'foo' 配置项不存在，则设置 'foo '并返回值 'bar'
+ * me_config()->all(); //返回所有配置
+ *
+ * @param string [name] 配置项名称
+ * @param string [default] 默认值，配置选项不存在的话默认值将会被设置并返回
+ *
+ * @return string | array | Me\Config\Config
+ *
+ * @author AlpFish 2016/7/25 18:42
+ */
+if (!function_exists('me_config')) {
+    function me_config($name = null, $default = null)
+    {
+        if (!is_null($name)) return Me\Config\Config::getInstance()->get($name, $default);
+
+        return Me\Config\Config::getInstance();
+    }
+}
+
+/*
+|--------------------------------------------------------------------------
+| 获取HTTP请求数据
+|--------------------------------------------------------------------------
+|
+| 包括 GET 和 POST 数据。
+|
+| @auth: AlpFish 2016/7/25 9:26
+*/
+if (!function_exists('request')) {
+    function request($name = null, $default = null)
+    {
+        static $request = array();
+        $request = array_merge($request, (array)$_GET, (array)$_POST);
+        if (is_string($name) && isset($request[$name])) {
+            return $request[$name];
+        }
+        return null;
     }
 }

@@ -1,9 +1,11 @@
 <?php
 
+$a=null;
+data_set($_GET, 'a.b', ['c', 'd']);
+data_set($_GET, 'a.c', ['c', 'd']);
+d(request()->only(['a.b','a.c','a']));
+ddd($_SESSION);
 
-
-
-//ddd('alpfish/me bootstrap.php');
 defined('ME_PATH') || define('ME_PATH', ab_path(__DIR__ . '/../'));
 
 /*

@@ -1,8 +1,6 @@
 <?php
 
 
-
-
 /*--------------------------------------------------------------------------
  * Api 数据封装与响应
  *--------------------------------------------------------------------------
@@ -101,23 +99,183 @@ if (!function_exists('me_config')) {
     }
 }
 
-/*
-|--------------------------------------------------------------------------
-| 获取HTTP请求数据
-|--------------------------------------------------------------------------
-|
-| 包括 GET 和 POST 数据。
-|
-| @auth: AlpFish 2016/7/25 9:26
-*/
+/**
+ * 获取HTTP客户端请求数据
+ *
+ * @param  string  [$key]  要获取的参数键
+ * @param  string  [$default]  键不存在时返回的值
+ * @return mixed
+ *
+ * @e.g
+ * request('id');  ===  request()->id;  //返回同一个数据的两种用法
+ * request('name.firstname');  //使用点语法
+ * request()->only(['id', 'name']);   //返回多个数据
+ * request()->has('pic');  //数据判断
+ * request()->all();  //所有数据
+ * request()->file('img');  //文件数据
+ * request()->isPost();  //请求方式判断
+ * ...
+ *
+ * @auth: AlpFish 2016/7/25 9:26
+ */
 if (!function_exists('request')) {
-    function request($name = null, $default = null)
+    function request($key = null, $default = null)
     {
-        static $request = array();
-        $request = array_merge($request, (array)$_GET, (array)$_POST);
-        if (is_string($name) && isset($request[$name])) {
-            return $request[$name];
+        if (is_null($key)) {
+            return Me\Http\Request::getInstance();
         }
-        return null;
+        return Me\Http\Request::getInstance()->input($key, $default);
+    }
+}
+
+/**
+ * 转换 HTML entities 特殊字符
+ *
+ * @param  string  $value
+ * @return string
+ */
+if (! function_exists('e')) {
+    function e($value)
+    {
+        return htmlentities($value, ENT_QUOTES, 'UTF-8', false);
+    }
+}
+
+/*------------------------------------------------------------------------------------------------
+ *
+ *                                 来自于 Laravel 5.2
+ *
+ *-------------------------------------------------------------------------------------------------
+ *
+ * 此类帮助函数在个人包中所很多使用的地方，切不可随意修改删除
+ *
+ * 若引入更多可见 Illuminate\Support 命令空间下的 helpers.php
+ *
+ * 具体用法可见 Laravel 5.2 手册中的帮助函数和集合。
+ *
+ */
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
+
+/**
+ * 用给定参数值创建一个集合
+ *
+ * 集合有强大的数组操作功能，详细见 Laravel 5.2 中文手册。
+ *
+ * @param  mixed  $value
+ * @return \Illuminate\Support\Collection
+ */
+if (! function_exists('collect')) {
+    function collect($value = null)
+    {
+        return new Collection($value);
+    }
+}
+
+/**
+ * 从数组/对象中获取数据, 支持点语法
+ * Get an item from an array or object using "dot" notation.
+ *
+ * @param  mixed   $target
+ * @param  string|array  $key
+ * @param  mixed   $default
+ * @return mixed
+ */
+if (! function_exists('data_get')) {
+    function data_get($target, $key, $default = null)
+    {
+        if (is_null($key)) {
+            return $target;
+        }
+
+        $key = is_array($key) ? $key : explode('.', $key);
+
+        while (($segment = array_shift($key)) !== null) {
+            if ($segment === '*') {
+                if ($target instanceof Collection) {
+                    $target = $target->all();
+                } elseif (! is_array($target)) {
+                    return value($default);
+                }
+
+                $result = Arr::pluck($target, $key);
+
+                return in_array('*', $key) ? Arr::collapse($result) : $result;
+            }
+
+            if (Arr::accessible($target) && Arr::exists($target, $segment)) {
+                $target = $target[$segment];
+            } elseif (is_object($target) && isset($target->{$segment})) {
+                $target = $target->{$segment};
+            } else {
+                return value($default);
+            }
+        }
+
+        return $target;
+    }
+}
+
+/**
+ * （以覆盖的方式）为数组或对象填充数据, 支持点语法
+ * Set an item on an array or object using dot notation.
+ *
+ * @param  mixed  $target
+ * @param  string  $key
+ * @param  mixed  $value
+ * @param  bool  $overwrite
+ * @return mixed
+ */
+if (! function_exists('data_set')) {
+    function data_set(&$target, $key, $value, $overwrite = true)
+    {
+        $segments = is_array($key) ? $key : explode('.', $key);
+
+        if (($segment = array_shift($segments)) === '*') {
+            if (! Arr::accessible($target)) {
+                $target = [];
+            }
+
+            if ($segments) {
+                foreach ($target as &$inner) {
+                    data_set($inner, $segments, $value, $overwrite);
+                }
+            } elseif ($overwrite) {
+                foreach ($target as &$inner) {
+                    $inner = $value;
+                }
+            }
+        } elseif (Arr::accessible($target)) {
+            if ($segments) {
+                if (! Arr::exists($target, $segment)) {
+                    $target[$segment] = [];
+                }
+
+                data_set($target[$segment], $segments, $value, $overwrite);
+            } elseif ($overwrite || ! Arr::exists($target, $segment)) {
+                $target[$segment] = $value;
+            }
+        } elseif (is_object($target)) {
+            if ($segments) {
+                if (! isset($target->{$segment})) {
+                    $target->{$segment} = [];
+                }
+
+                data_set($target->{$segment}, $segments, $value, $overwrite);
+            } elseif ($overwrite || ! isset($target->{$segment})) {
+                $target->{$segment} = $value;
+            }
+        } else {
+            $target = [];
+
+            if ($segments) {
+                data_set($target[$segment], $segments, $value, $overwrite);
+            } elseif ($overwrite) {
+                $target[$segment] = $value;
+            }
+        }
+
+        return $target;
     }
 }

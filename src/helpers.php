@@ -45,12 +45,8 @@ if (!function_exists('api')) {
 if (!function_exists('ab_path')) {
     function ab_path($path = null)
     {
-        //获取根目录
-        $root = empty(me_config('root_path')) ? $_SERVER['DOCUMENT_ROOT'] : me_config('root_path');
-        //统一分隔符
-        $root = trim(str_replace('\\', '/', $root));
-        //尾部加 /, 便于连接子目录
-        $root = $root[strlen($root) - 1] === '/' ? $root : $root . '/';
+        //获取根目录 & 统一分隔符
+        $root = str_replace('\\', '/', realpath(__DIR__ . '/../../../../')) . '/';
 
         //返回项目根路径
         if (is_null($path)) return $root;

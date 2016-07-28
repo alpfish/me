@@ -1,10 +1,9 @@
 <?php
 
-$a=null;
-data_set($_GET, 'a.b', ['c', 'd']);
-data_set($_GET, 'a.c', ['c', 'd']);
-d(request()->only(['a.b','a.c','a']));
-ddd($_SESSION);
+
+/*d($_SERVER);
+d(realpath(ab_path()));
+ddd();*/
 
 defined('ME_PATH') || define('ME_PATH', ab_path(__DIR__ . '/../'));
 

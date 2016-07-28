@@ -93,9 +93,27 @@ interface Request
      * @return bool
      */
     public function isAjax();
-    
-    //public function isMobile();
-    //public function isMobile();
+
+    /**
+     * 是否为 手机/平板客户端
+     *
+     * @return bool
+     */
+    public function isMobile();
+
+    /**
+     * 是否为 平板客户端
+     *
+     * @return bool
+     */
+    public function isTablet();
+
+    /**
+     * 是否为 微信客户端
+     *
+     * @return bool
+     */
+    public function isWeChat();
 
     /**
      * 获取请求方式
@@ -104,17 +122,12 @@ interface Request
      */
     public function method();
 
-    public function isGet();
+    /**
+     * 是否为某种请求方式
+     *
+     * @param string $method
+     * @return bool
+     */
+    public function isMethod($method);
 
-    public function isPost();
-
-    public function isPut();
-
-    public function isDelete();
-
-    public function isHead();
-
-    public function isOptions();
-
-    public function isPatch();
 }

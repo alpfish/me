@@ -148,7 +148,7 @@ class Request implements RequestInterface
     }
 
     /**
-     * 判断文件是否存在.
+     * 文件是否存在.
      *
      * @param  string|array  $key
      * @return bool
@@ -170,6 +170,8 @@ class Request implements RequestInterface
 
     /**
      * 获取请求文件
+     *
+     * 前端表单必须包含 method="post" enctype="multipart/form-data" 才能正确上传文件
      *
      * @param  string  $key
      * @param  string|array|null  $default
@@ -214,7 +216,7 @@ class Request implements RequestInterface
     }
 
     /**
-     * 判断是否为 AJAX 请求
+     * 是否为 AJAX请求
      *
      * @return bool
      */
@@ -222,6 +224,36 @@ class Request implements RequestInterface
     {
         return  $this->input('ajax') || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 'XMLHttpRequest' ==  $_SERVER['HTTP_X_REQUESTED_WITH'])
             ? true : false;
+    }
+
+    /**
+     * 是否为 手机/平板客户端
+     *
+     * @return bool
+     */
+    public function isMobile()
+    {
+        return  Mobile::getInstance()->isMobile();
+    }
+
+    /**
+     * 是否为 平板客户端
+     *
+     * @return bool
+     */
+    public function isTablet()
+    {
+        return  Mobile::getInstance()->isTablet();
+    }
+
+    /**
+     * 是否为 微信客户端
+     *
+     * @return bool
+     */
+    public function isWeChat()
+    {
+        return  Mobile::getInstance()->isTablet() && stripos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') != false;
     }
 
     /**
@@ -234,39 +266,15 @@ class Request implements RequestInterface
         return $_SERVER['REQUEST_METHOD'];
     }
 
-    public function isGet()
+    /**
+     * 是否为某种请求方式
+     *
+     * @param string $method
+     * @return bool
+     */
+    public function isMethod($method)
     {
-        return $this->method() == 'GET';
-    }
-
-    public function isPost()
-    {
-        return $this->method() == 'POST';
-    }
-
-    public function isPut()
-    {
-        return $this->method() == 'PUT';
-    }
-
-    public function isDelete()
-    {
-        return $this->method() == 'DELETE';
-    }
-
-    public function isHead()
-    {
-        return $this->method() == 'HEAD';
-    }
-
-    public function isOptions()
-    {
-        return $this->method() == 'OPTIONS';
-    }
-
-    public function isPatch()
-    {
-        return $this->method() == 'PATCH';
+        return strtoupper((string)$method) === strtoupper($this->method());
     }
 
     private function xssCheck() {

@@ -125,6 +125,26 @@ if (!function_exists('request')) {
 }
 
 /**
+ * 数据验证器
+ *
+ * 1. 支持的验证规则有 required|mobile|email|min:|max:|numeric|integer|date|ip|url|activeUrl
+ *
+ * @param array $data   要验证的数据，$rules 有的数据必须有，$rules 没有的数据也可以有
+ * @param array $rules  待验证的规则，规则名和参数必须正确
+ * @param array [$msg]    验证失败信息，使用 ： 号声明对应规则验证失败信息，不使用 ：号则是对该条数据设置相同的失败信息
+ *
+ * @return Me\Validation\Validator
+ *
+ * @author AlpFish 2016/7/28 23:52
+ */
+if (!function_exists('validate')) {
+    function validate($data, $rules, $msg = null)
+    {
+        return new Me\Validation\Validator($data, $rules, $msg);
+    }
+}
+
+/**
  * 转换 HTML entities 特殊字符
  *
  * @param  string  $value

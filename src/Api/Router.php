@@ -17,7 +17,7 @@ use Me\Contracts\Api\Router as RouterInterface;
 
 class Router implements RouterInterface
 {
-    //Api根目录
+    //Api根目录 (可在路由启动前配置此项)
     public static $path = 'app/api/';
 
     //简写地图文件

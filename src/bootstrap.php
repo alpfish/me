@@ -1,9 +1,29 @@
 <?php
 
+/*
 
-/*d($_SERVER);
-d(realpath(ab_path()));
-ddd();*/
+$validate = validate(
+    request()->only('username', 'mobile','date', 'url'),
+    [
+        'username' => 'required|min:4|max:12',
+        'mobile' => 'required|mobile',
+        'date' => 'required|date',
+        'url' => 'required|url',
+    ],
+    [
+        'username:required' => '需要填写会员名。',
+        'username:min' => '会员名长度需要大于4个字符。',
+        'username:max' => '会员名长度需要小于12个字符。',
+        'mobile:required' => '需要填写手机号。',
+        'mobile:mobile' => '手机号格式不正确。',
+    ]
+);
+
+if (!$validate->success)
+    api('data')->errs($validate->errors)->response();
+
+*/
+
 
 defined('ME_PATH') || define('ME_PATH', ab_path(__DIR__ . '/../'));
 

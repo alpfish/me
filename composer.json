@@ -15,6 +15,7 @@
     "php": ">=5.5.9",
     "illuminate/database": "^5.2",
     "illuminate/events": "^5.2",
+    "illuminate/validation": "^5.2",
     "mobiledetect/mobiledetectlib": "^2.8"
   },
   "autoload": {

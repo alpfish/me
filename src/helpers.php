@@ -1,8 +1,7 @@
 <?php
 
-
 /*--------------------------------------------------------------------------
- * Api 数据封装与响应
+ * Api 容器
  *--------------------------------------------------------------------------
  * 用例：
  * api(); //返回 Me/Api/Api 实例
@@ -11,20 +10,21 @@
  * api('data')->status(400, '参数不存在:mobile'); 设置调用错误状态码和信息
  * api('data')->response(); 同api()->response(); 响应，默认 JSON 格式
  *
+ * @param  string  $make
+ * @param  array   $parameters
  *
- * @param string $name 功能名称
- *
- * @return mixed
+ * @return mixed|Me\Api\Api
  *
  * @author AlpFish 2016/7/25 19:53
  */
 if (!function_exists('api')) {
-    function api($name = null)
+    function api($make = null, $parameters = [])
     {
-        if ($name == 'data') {
-            return Me\Api\Data::getInstance();
+        if (is_null($make)) {
+            return Illuminate\Container\Container::getInstance();
         }
-        return Me\Api\Api::getInstance();
+
+        return Illuminate\Container\Container::getInstance()->make($make, $parameters);
     }
 }
 
@@ -89,9 +89,7 @@ if (!function_exists('ab_path')) {
 if (!function_exists('me_config')) {
     function me_config($name = null, $default = null)
     {
-        if (!is_null($name)) return Me\Config\Config::getInstance()->get($name, $default);
-
-        return Me\Config\Config::getInstance();
+        return Me\Config\Config::getInstance()->get($name, $default);
     }
 }
 

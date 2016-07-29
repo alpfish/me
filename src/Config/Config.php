@@ -11,35 +11,33 @@ class Config implements ConfigInterface
      *
      * @var array
      */
-    protected $data = array();
+    protected static $data = array();
 
     /**
      * 单例模式
      */
     protected static $self;
 
-    /* *
+    /**
      * @return self
      */
     public static function getInstance()
     {
-        if (self::$self) return self::$self;
-
+        if (self::$self) {
+            return self::$self;
+        }
+        
         return self::$self = new self();
     }
 
-    /**
-     * 加载配置文件
-     *
-     * @param  string $path
-     *
-     * @return $this
-     */
-    public function load($path)
-    {
-        if (is_file($path)) $this->data = array_merge($this->data, (array)require $path);
-
-        return $this;
+    public function __construct() {
+        $configFiles = [
+            ab_path('/vendor/alpfish/me/config/config.php'),
+            ab_path('/config/me.php')
+        ];
+        foreach ($configFiles as $file) {
+            if (is_file($file)) self::$data = array_merge(self::$data, (array)require $file);
+        }
     }
 
     /**
@@ -55,20 +53,13 @@ class Config implements ConfigInterface
     public function get($name = null, $default = null)
     {
         if (is_string($name)) {
-            $name = explode('.', $name);
-            switch (count($name)) {
-                case 1:
-                    if (!isset($this->data[$name[0]])) $this->data[$name[0]] = $default;
-                    return $this->data[$name[0]];
-                case 2:
-                    if (!isset($this->data[$name[0]][$name[1]])) $this->data[$name[0]][$name[1]] = $default;
-                    return $this->data[$name[0]][$name[1]];
-                case 3:
-                    if (!isset($this->data[$name[0]][$name[1]][$name[2]])) $this->data[$name[0]][$name[1]][$name[2]] = $default;
-                    return $this->data[$name[0]][$name[1]][$name[2]];
+            if(!data_get(self::$data, $name, $default)) {
+                $this->seachLoad($name);
             }
+            return data_get(self::$data, $name, $default);
         }
-        return is_null($default) ? null : $default;
+
+        return self::$data;
     }
 
     /**
@@ -80,6 +71,29 @@ class Config implements ConfigInterface
      */
     public function all()
     {
-        return $this->data;
+        return self::$data;
+    }
+
+    /**
+     * 搜索加载单独配置文件
+     *
+     * @param  string $key
+     *
+     * @return $this
+     */
+    private function seachLoad($key)
+    {
+        $name = explode('.', $key);
+
+        $configFiles = [
+            ab_path('/vendor/alpfish/me/config/'.$name[0] . '.php'),
+            ab_path('/config/'.$name[0] . '.php')
+        ];
+        foreach ($configFiles as $file) {
+            if (is_file($file)) {
+                $config[$name[0]] = (array)require $file;
+                self::$data = array_merge(self::$data, $config);
+            }
+        }
     }
 }

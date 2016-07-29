@@ -5,15 +5,6 @@ namespace Me\Contracts\Config;
 interface Config
 {
     /**
-     * 加载配置文件
-     *
-     * @param  string $path
-     *
-     * @return $this
-     */
-    public function load($path);
-
-    /**
      * 获取配置
      *
      * @param string $name 配置项名

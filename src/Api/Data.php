@@ -178,6 +178,10 @@ class Data implements DataContract
      * */
     public function response()
     {
+        //允许跨域请求
+        header("Access-Control-Allow-Origin: *");
+        //header("Access-Control-Allow-Origin: http://localhost:8080");
+
         // XML响应
         $format = empty(request('format')) ? 'JSON' : request('format');
 
@@ -188,9 +192,10 @@ class Data implements DataContract
             header('Content-Type: text/xml; charset=utf-8');
             echo $content; exit();
         }
+
         // JSON响应
         header('Content-Type: application/json; charset=utf-8');
-        echo json_encode($this->get_responseData()); exit();
+        echo json_encode($this->get_responseData());
     }
 
     /* *

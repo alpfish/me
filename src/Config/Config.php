@@ -91,7 +91,7 @@ class Config implements ConfigInterface
         ];
         foreach ($configFiles as $file) {
             if (is_file($file)) {
-                $config[$name[0]] = (array)require $file;
+                $config[$name[0]] = (array)require_once $file;
                 self::$data = array_merge(self::$data, $config);
             }
         }
